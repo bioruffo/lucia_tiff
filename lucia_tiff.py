@@ -23,7 +23,7 @@ import pyautogui
 # import time
 from pynput import keyboard # https://stackoverflow.com/a/43106497/2962364
 
-pyautogui.PAUSE = 1
+pyautogui.PAUSE = 0.1
 
 def adapt():
     for i in range(3):
