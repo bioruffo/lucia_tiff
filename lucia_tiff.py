@@ -23,7 +23,7 @@ import pyautogui
 # import time
 from pynput import keyboard # https://stackoverflow.com/a/43106497/2962364
 
-pyautogui.PAUSE = 0.1
+pyautogui.PAUSE = 1
 
 def adapt():
     for i in range(3):
@@ -98,6 +98,10 @@ def resize():
         pyautogui.press("i")
         pyautogui.keyUp("alt")
         pyautogui.press("e")
+        # select resing by percent of original
+        pyautogui.keyDown("alt")
+        pyautogui.press("p")
+        pyautogui.keyUp("alt")
         # Resize to 145%
         pyautogui.press(["1", "4", "5", "enter"])
         # ctrl-tab to pass to the next image
@@ -227,10 +231,12 @@ def on_press(key):
 
 
 def main():
+    print("Listening...")
     # https://stackoverflow.com/a/43106497/2962364
     listener = keyboard.Listener(on_press=on_press)
     listener.start()  # start to listen on a separate thread
     listener.join()  # remove if main thread is polling self.keys
+    
     
 if __name__ == "__main__":
     main()
