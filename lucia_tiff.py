@@ -204,33 +204,40 @@ def switch(where=["r"]): # "it's not a bug, it's a feature"(TM)
 
         
 def on_press(key):
+    global pause
     # main schema from https://stackoverflow.com/a/43106497/2962364
     try:
         k = key.char  # single-char keys
     except:
         k = key.name  # other keys
-    if k == "a":
-        adapt()
-    elif k == "x":
-        close()
-    elif k == "v":
-        save()
-    elif k == "left":
-        goright()
-    elif k == "right":
-        goleft()
-    elif k == "up":
-        switch()
-    elif k == "r":
-        resize()
-    elif k == "q":
-        print('Key pressed: ' + k, "; bye!")
-        return False  # stop listener; remove this if want more keys
-    print('Key pressed: ' + k)
+    if k == "p":
+        pause = not pause
+        print("Pause " + ("on" if pause else "off"))
+    if not pause:
+        if k == "a":
+            adapt()
+        elif k == "x":
+            close()
+        elif k == "v":
+            save()
+        elif k == "left":
+            goright()
+        elif k == "right":
+            goleft()
+        elif k == "up":
+            switch()
+        elif k == "r":
+            resize()
+        elif k == "q":
+            print('Key pressed: ' + k, "; bye!")
+            return False  # stop listener; remove this if want more keys
+        print('Key pressed: ' + k)
     
 
 
 def main():
+    global pause 
+    pause = False
     print("Listening...")
     # https://stackoverflow.com/a/43106497/2962364
     listener = keyboard.Listener(on_press=on_press)
