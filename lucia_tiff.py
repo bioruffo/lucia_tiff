@@ -15,7 +15,8 @@ HOWTO:
     6. Left and right arrow keys are remapped to switch between images
     7. The up arrow key can be used to quickly switch between 2 images (FITC, TXR)
     8. Press 'x' to close all the three images (composite, FITC, TXR)
-    9. press 'q' to quit the script before typing in other programs!
+    9. press '.' to toggle PAUSE
+    10. press 'q' to quit
 
 """
 
