@@ -10,7 +10,7 @@ HOWTO:
     1. Execute the script
     2. Open the TIFF image in Paint Shop Pro 7 (it will open as three separate files)
     3. Expand the window of the first image (the DAPI channel)
-    4. press 'a' to adapt the image
+    4. press 'a' to adapt the image (or 'b' to use stretch)
     5. You can press 'v' to save the composite image
     6. Left and right arrow keys are remapped to switch between images
     7. The up arrow key can be used to quickly switch between 2 images (FITC, TXR)
@@ -248,9 +248,9 @@ def on_press(key):
         print("Pause " + ("on" if pause else "off"))
     if not pause:
         if k == "a":
-            adapt("stretch")
+            adapt("adjust")
         elif k == "b":
-            adapt("adjust") # Use the preset Histogram Adjust settings
+            adapt("stretch")
         elif k == "x":
             close()
         elif k == "v":
