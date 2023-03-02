@@ -22,9 +22,10 @@ HOWTO:
 
 import pyautogui
 import time
+import sys
 from pynput import keyboard # https://stackoverflow.com/a/43106497/2962364
 
-pyautogui.PAUSE = 0.1
+pyautogui.PAUSE = 0.2
 
 def adapt(method):
     assert method in ("adjust", "stretch")
@@ -54,12 +55,14 @@ def adapt(method):
                                     "1", "tab", # gamma = 1.0
                                     "tab", "tab", "tab", # skip the buttons
                                     "tab", # defining high with %
-                                    "0", ",", "0", "0", "1", "enter"]) # High = 0,001%
+                                    "0", ",", "0", "0", "1"]) # High = 0,001%
+                pyautogui.press("enter")
             else: # We still need to set the lowest 3% of the specific current image to zero
                 pyautogui.press(["tab", "tab", "tab", "tab", 
                                  "3", # lowest 3%
                                  "tab", "tab", "tab", "tab", "tab", "tab",
-                                 "0", ",", "0", "0", "1", "enter"]) # High = 0,001%
+                                 "0", ",", "0", "0", "1"]) # High = 0,001%
+                pyautogui.press("enter")
 
             pyautogui.press("enter")
 
@@ -79,8 +82,9 @@ def adapt(method):
     # select the second image for the green channel
     pyautogui.press(["down", "tab"])
     # select the third image for the red channel, and execute
-    pyautogui.press(["down", "down", "enter"])
-    
+    pyautogui.press(["down", "down"])
+    pyautogui.press("enter")
+
     # shitf-t: histogram stretch again the RGB image
     pyautogui.keyDown("shift")
     pyautogui.press("t")
@@ -103,7 +107,8 @@ def adapt(method):
                      "1", "tab", # gamma = 1.0
                      "tab", "tab", "tab", # skip the buttons
                      "2", "5", "5", "tab", # High = 255
-                     "0", "enter"]) # Midtone 0 and enter
+                     "0"]) # 0% over
+    pyautogui.press("enter")
     
     # switch to the DAPI image...
     pyautogui.keyDown("ctrl")
@@ -113,12 +118,13 @@ def adapt(method):
     pyautogui.keyDown("alt")
     pyautogui.press("f")
     pyautogui.keyUp("alt")
-    pyautogui.press(["c", "tab", "enter"])
+    pyautogui.press(["c", "tab"])
+    pyautogui.press("enter")
     
-    # Resize everything to fit better on screen
-    resize() # entering here with the FITC image on the foreground
     # Colorize the FITC and TXR images
     color() # entering here with the FITC image on the foreground
+    # Resize everything to fit better on screen
+    resize() # entering here with the FITC image on the foreground
 
 
 def resize():
@@ -134,7 +140,8 @@ def resize():
         pyautogui.press("p")
         pyautogui.keyUp("alt")
         # Resize to 145%
-        pyautogui.press(["1", "4", "5", "enter"])
+        pyautogui.press(["1", "4", "5"])
+        pyautogui.press("enter")
         # ctrl-tab to pass to the next image
         pyautogui.keyDown("ctrl")
         pyautogui.press("tab")
@@ -157,11 +164,16 @@ def color():
         time.sleep(1)
         if i == 0:
             # Green is -100, 0, -100
-            pyautogui.press(["-", "1", "0", "0", "tab", "0", "tab", "-", "1", "0", "0", "enter"])
+            pyautogui.press(["-", "1", "0", "0", "tab", "0", "tab", "-", "1", "0", "0", "tab"])
+            time.sleep(2)
+            pyautogui.press("enter")
         elif i == 1:
             # Red is 0, -100, -100
-            pyautogui.press(["0", "tab", "-", "1", "0", "0", "tab", "-", "1", "0", "0", "enter"])
+            pyautogui.press(["0", "tab", "-", "1", "0", "0", "tab", "-", "1", "0", "0", "tab"])
+            time.sleep(2)
+            pyautogui.press("enter")
         # next image
+        time.sleep(1)
         pyautogui.keyDown("ctrl")
         pyautogui.press("tab")
         pyautogui.keyUp("ctrl")
@@ -195,7 +207,8 @@ def closeAll():
         pyautogui.keyDown("alt")
         pyautogui.press("f")
         pyautogui.keyUp("alt")
-        pyautogui.press(["c", "tab", "enter"])
+        pyautogui.press(["c", "tab"])
+        pyautogui.press("enter")
 
 
 
@@ -206,7 +219,8 @@ def close():
         pyautogui.keyDown("alt")
         pyautogui.press("f")
         pyautogui.keyUp("alt")
-        pyautogui.press(["c", "tab", "enter"])
+        pyautogui.press(["c", "tab"])
+        pyautogui.press("enter")
 
 
 def goright():
