@@ -25,7 +25,7 @@ import time
 import sys
 from pynput import keyboard # https://stackoverflow.com/a/43106497/2962364
 
-pyautogui.PAUSE = 0.2
+pyautogui.PAUSE = 0.1
 
 def adapt(method):
     assert method in ("adjust", "stretch")
@@ -71,6 +71,28 @@ def adapt(method):
         pyautogui.press("tab")
         pyautogui.keyUp("ctrl")
 
+    # Join the images
+    join()
+
+    # switch to the DAPI image...
+    pyautogui.keyDown("ctrl")
+    pyautogui.press("tab")
+    pyautogui.keyUp("ctrl")
+    # ...and close it
+    pyautogui.keyDown("alt")
+    pyautogui.press("f")
+    pyautogui.keyUp("alt")
+    pyautogui.press(["c", "tab"])
+    pyautogui.press("enter")
+
+    # Colorize the FITC and TXR images
+    color() # entering here with the FITC image on the foreground
+    
+    # Resize everything to fit better on screen
+    resize() # entering here with the FITC image on the foreground
+
+
+def join():
     # combine images as RGB
     # alt-c, m, c opens the combine window
     pyautogui.keyDown("alt")
@@ -109,23 +131,6 @@ def adapt(method):
                      "2", "5", "5", "tab", # High = 255
                      "0"]) # 0% over
     pyautogui.press("enter")
-    
-    # switch to the DAPI image...
-    pyautogui.keyDown("ctrl")
-    pyautogui.press("tab")
-    pyautogui.keyUp("ctrl")
-    # ...and close it
-    pyautogui.keyDown("alt")
-    pyautogui.press("f")
-    pyautogui.keyUp("alt")
-    pyautogui.press(["c", "tab"])
-    pyautogui.press("enter")
-    
-    # Colorize the FITC and TXR images
-    color() # entering here with the FITC image on the foreground
-    # Resize everything to fit better on screen
-    resize() # entering here with the FITC image on the foreground
-
 
 def resize():
     # resize all the three images on screen to view them better
@@ -260,11 +265,20 @@ def on_press(key):
     if k == ".":
         pause = not pause
         print("Pause " + ("on" if pause else "off"))
-    if not pause:
+    elif k == "q":
+        print('Key pressed: ' + k, "; bye!")
+        return False  # stop listener; remove this if want more keys
+    elif not pause:
         if k == "a":
             adapt("adjust")
         elif k == "b":
             adapt("stretch")
+        elif k == "j":
+            join()
+        elif k == "k":
+            color()
+        elif k == "r":
+            resize()
         elif k == "x":
             close()
         elif k == "v":
@@ -275,11 +289,6 @@ def on_press(key):
             goleft()
         elif k == "up":
             switch()
-        elif k == "r":
-            resize()
-        elif k == "q":
-            print('Key pressed: ' + k, "; bye!")
-            return False  # stop listener; remove this if want more keys
         print('Key pressed: ' + k)
     
 
