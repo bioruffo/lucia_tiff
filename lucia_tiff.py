@@ -20,23 +20,53 @@ HOWTO:
 """
 
 import pyautogui
-# import time
+import time
 from pynput import keyboard # https://stackoverflow.com/a/43106497/2962364
 
 pyautogui.PAUSE = 0.1
 
-def adapt():
+def adapt(method):
+    assert method in ("adjust", "stretch")
+
+
     for i in range(3):
-        
-        # shift-t activates the histogram Stretch function
-        pyautogui.keyDown("shift")
-        pyautogui.press("t")
-        pyautogui.keyUp("shift")
+        if method == "stretch":
+            print("Stretching image brightness...")
+            # shift-t activates the histogram Stretch function
+            pyautogui.keyDown("shift")
+            pyautogui.press("t")
+            pyautogui.keyUp("shift")
+        elif method == "adjust":
+            print("Adjusting image brightness...")
+            pyautogui.keyDown("ctrl")
+            pyautogui.keyDown("shift")
+            pyautogui.press("h")
+            pyautogui.keyUp("shift")
+            pyautogui.keyUp("ctrl")
+
+            if i == 0: # defining main parameters once
+                pyautogui.press(["tab", # We only have luminosity now
+                                    "2", "5", "5", "tab", # output max = 200
+                                    "0", "tab", # min = 0
+                                    "tab", # We define low with percent
+                                    "3", "tab", # set lowest 3% to zero
+                                    "1", "tab", # gamma = 1.0
+                                    "tab", "tab", "tab", # skip the buttons
+                                    "tab", # defining high with %
+                                    "0", ",", "0", "0", "1", "enter"]) # High = 0,001%
+            else: # We still need to set the lowest 3% of the specific current image to zero
+                pyautogui.press(["tab", "tab", "tab", "tab", 
+                                 "3", # lowest 3%
+                                 "tab", "tab", "tab", "tab", "tab", "tab",
+                                 "0", ",", "0", "0", "1", "enter"]) # High = 0,001%
+
+            pyautogui.press("enter")
+
         # ctrl-tab to pass to the next image
         pyautogui.keyDown("ctrl")
         pyautogui.press("tab")
         pyautogui.keyUp("ctrl")
-        
+
     # combine images as RGB
     # alt-c, m, c opens the combine window
     pyautogui.keyDown("alt")
@@ -67,8 +97,8 @@ def adapt():
     pyautogui.press(["down", "down", "down", "down", "tab",
                      "2", "0", "0", "tab", # output max = 200
                      "0", "tab", # min = 0
-                     "3", "0", "tab", # Low = 30
-                     "0", "tab", # % = 0
+                     "tab", # We define low with percent
+                     "5", "tab", # 5%
                      "1", "tab", # gamma = 1.0
                      "tab", "tab", "tab", # skip the buttons
                      "2", "5", "5", "tab", # High = 255
@@ -85,9 +115,9 @@ def adapt():
     pyautogui.press(["c", "tab", "enter"])
     
     # Resize everything to fit better on screen
-    resize()
+    resize() # entering here with the FITC image on the foreground
     # Colorize the FITC and TXR images
-    color()
+    color() # entering here with the FITC image on the foreground
 
 
 def resize():
@@ -118,10 +148,12 @@ def color():
         pyautogui.press("c")
         pyautogui.keyUp("alt")
         pyautogui.press(["i", "6"])
+        time.sleep(1)
         # open the Red/Green/Blue color menu
         pyautogui.keyDown("shift")
         pyautogui.press("u")
         pyautogui.keyUp("shift")
+        time.sleep(1)
         if i == 0:
             # Green is -100, 0, -100
             pyautogui.press(["-", "1", "0", "0", "tab", "0", "tab", "-", "1", "0", "0", "enter"])
@@ -210,12 +242,14 @@ def on_press(key):
         k = key.char  # single-char keys
     except:
         k = key.name  # other keys
-    if k == "p":
+    if k == ".":
         pause = not pause
         print("Pause " + ("on" if pause else "off"))
     if not pause:
         if k == "a":
-            adapt()
+            adapt("stretch")
+        elif k == "b":
+            adapt("adjust") # Use the preset Histogram Adjust settings
         elif k == "x":
             close()
         elif k == "v":
